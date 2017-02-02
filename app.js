@@ -4,6 +4,7 @@ const app = express()
 const pug = require('pug')
 
 const Jojo = require('./lib/models/jojo')
+const MyMarkdown = require('./lib/models/markdown')
 const template = pug.compileFile('templates/jojo.pug')
 
 app.get('/status', function(req, res){
@@ -19,20 +20,23 @@ app.get('/jojo', function(req, res){
 		}
 		else{
 			res.statusCode = 200
-			res.setHeader('Content-Type', 'text/plain')
-			res.send(template(JSON.parse(data)))
+			res.setHeader('Content-Type', 'text/html')
+			res.send(template(data))
 		}
 	})
-	fs.readFile('data/jojo.json', (err, data) => {
+})
+
+app.get('/home', function(req, res){
+	MyMarkdown.read('data/index.md', (err, data) => {
 		if(err){
 			res.statusCode = 500
 			res.setHeader('Content-Type', 'text/plain')
-			res.send('noob')
+			res.send(err)
 		}
 		else{
 			res.statusCode = 200
-			res.setHeader('Content-Type', 'text/plain')
-			res.send(template(JSON.parse(data)))
+			res.setHeader('Content-Type', 'text/html')
+			res.send(data)
 		}
 	})
 })
